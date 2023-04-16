@@ -116,7 +116,3 @@ tf.nn.embedding_lookup 相當於 keras.layers.Embedding ??
 
 參考URLNet
 default_emb_dim = 32
-
-
-When using a custom callable for split, the data received by the
-   callable will have the 1st dimension squeezed out - instead of [["string to split"], ["another string to split"]], the Callable will see ["string to split", "another string to split"]. The callable should return a Tensor with the first dimension containing the split tokens - in this example, we should see something like [["string", "to", "split"], ["another", "string", "to", "split"]]. This makes the callable site natively compatible with tf.strings.split().

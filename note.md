@@ -11,11 +11,11 @@ token_feature = {
 }
 ```
 
-class 與 text 是使用 ngrams_wb 製作的 Embedding
+class 與 text 是使用 ngrams_wb 製作的 Embedding，text 實際上沒有被用到
 
 `token_features = get_text_around_selector_list() # text-full = sibling's text-exact around node's text-exact.`
 `link_to_features(): Text contecnt of the link otherwise alt or img`
-格式: 'text-full': before,link_to_features,after
+**text-full** pattern: `f'{before},{Plink_to_features},{after}'`
 
 ----
 
@@ -26,6 +26,8 @@ Sentence(text content) embedding
 -> `laser.embed_sentences(sents, lang=self.lang)[0]`
 
 laser_full_tokens_emb
+
+leaser做'text-full'的embedding
 
 ----
 
@@ -40,6 +42,10 @@ Parent tag 由大到小排序
 
 Class feature (class="XXX")
 Query feature (?q=XXX)
+
+token_feature 裡的 class 有加上 parent class
+self_and_children_classes = ' '.join(link.xpath(".//@class").extract())
+css_classes = normalize(parent_classes + ' ' + self_and_children_classes)
 
 用訓練資料製作一個Tokenizer
 由該class/query name出現的次數排序，
@@ -94,3 +100,23 @@ When true positive + false negative == 0, recall is undefined.
 ----
 
 Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
+
+`libdevice.10.bc`
+
+網域不同 挑掉?
+
+----
+
+Embedding output_dim 是 32
+AveragePooling2D pool_size=(256, 1)
+
+這啥??
+
+tf.nn.embedding_lookup 相當於 keras.layers.Embedding ??
+
+參考URLNet
+default_emb_dim = 32
+
+
+When using a custom callable for split, the data received by the
+   callable will have the 1st dimension squeezed out - instead of [["string to split"], ["another string to split"]], the Callable will see ["string to split", "another string to split"]. The callable should return a Tensor with the first dimension containing the split tokens - in this example, we should see something like [["string", "to", "split"], ["another", "string", "to", "split"]]. This makes the callable site natively compatible with tf.strings.split().

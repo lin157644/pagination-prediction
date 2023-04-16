@@ -26,7 +26,8 @@ python3 -m pip install tensorflow_addons
 # Other
 conda install -c conda-forge scikit-learn==0.24.2 matplotlib pandas openpyxl tldextract ipython ipywidgets ipykernel fasttext -y
 python3 -m pip install sklearn_crfsuite parsel
-
+python3 -m pip install tensorflow_text
+# conda install -c conda-forge nltk -y
 
 # Replace the crf
 ```
@@ -49,3 +50,5 @@ Attempting uninstall: nvidia-cudnn-cu11
     Uninstalling nvidia-cudnn-cu11-8.7.0.84:
       Successfully uninstalled nvidia-cudnn-cu11-8.7.0.84
 ???????
+
+抓後八個path

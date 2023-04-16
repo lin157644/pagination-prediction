@@ -44,25 +44,25 @@ class Storage(object):
         self.label_map = label_map
         self.__test_file = None
         print("Current test file: ",language_keys)
-    
+
     @property
     def test_file(self):
         return self.__test_file
-    
+
     @test_file.setter
     def test_file(self, value):
         if value not in TEST_FILE_MAP:
             print(f"{value} not in the list: {TEST_FILE_MAP.keys()}")
             return
         self.__test_file = value
-    
+
     def get_all_test_languages(self):
         return language_keys
-    
+
     def get_test_file_list(self):
         print("Test file list: ")
         print(TEST_FILE_MAP)
-        
+
     def get_Xy(self, language=None, validate=True, contain_button=True, contain_position=False, file_type='T', scaled_page = 'normal', verbose = False):
         X, y, scaled_pages = [], [], []
         if verbose:
@@ -83,9 +83,9 @@ class Storage(object):
                 tag_positions = parser.get_scaled_page(scaler = scaled_page)
                 scaled_pages.append(tag_positions[:len(xseq)])
         return X, y, scaled_pages
-    
-    def test_selector(self, target, validate=True, contain_button=True, file_type='T'):
-        for row in self.iter_records(contain_button, file_type):
+
+    def test_selector(self, target, validate=True, contain_button=True, file_type='T', language=None):
+        for row in self.iter_records(contain_button, file_type, language):
             filename, encoding = row['File Name'], row['Encoding']
             if filename == target:
                 html = self._load_html(row)
@@ -114,7 +114,7 @@ class Storage(object):
                 tag_positions = parser.get_scaled_page(scaler = scaled_page)
                 scaled_pages.append(tag_positions[:len(xseq)])
         return X, y, scaled_pages
-    
+
     def get_test_Xy_by_language(self, language=None, validate=True, contain_button=True):
         if language is None:
             raise ValueError("language must be specified")
@@ -130,7 +130,7 @@ class Storage(object):
             X.append(xseq)
             y.append(yseq)
         return X, y
-         
+
     def iter_records(self, contain_button, file_type, language):
 #         info_path = os.path.join(self.path, 'data_2.csv')
         info_path = os.path.join(self.path, 'data_all.csv')
@@ -186,7 +186,7 @@ class Storage(object):
         data_path = os.path.join(DEFAULT_MULTI_DATA_PATH, language)
         path = os.path.join(data_path, str(row['File Name']) + ".html")
         with io.open(path, encoding=row['Encoding']) as f:
-            return f.read()  
+            return f.read()
     def _load_html(self, row):
 #         data_path = os.path.join(self.path, 'html_2')
         data_path = os.path.join(self.path, 'html_all')

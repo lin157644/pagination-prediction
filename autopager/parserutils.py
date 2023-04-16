@@ -6,6 +6,7 @@
 
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+from typing import Any
 from urllib.parse import quote, unquote
 from html.parser import HTMLParser
 import matplotlib.pyplot as plt
@@ -44,31 +45,32 @@ class TagParser(HTMLParser):
 class MyHTMLParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
+        # [(tag, (line, offset),...]
         self.start_tags = []
         self.wellDownloaded = False
         self.type = 'HTML'
-        
-    def handle_starttag(self, tag, attrs):
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, Any]]):
         tmp_dict = {}
         for attr in attrs:
             if attr[0] not in tmp_dict and len(attr[0]) >= 2: #Filter wrong key(use id for minimum key)
                 tmp_dict[attr[0]] = attr[1]
         temp_attrs = [(k,v) for k,v in tmp_dict.items()]
         self.start_tags.append((tag, (self.getpos()[0], self.getpos()[1]),temp_attrs))
-        
+
     def handle_endtag(self, tag):
         if tag == 'html':
             self.wellDownloaded = True
 
     def get_tags(self):
         return self.start_tags, self.end_tags
-    
+
     def get_scaled_page(self, only_train_data = True, scaler = 'normal'):
-        
+
         if scaler != 'normal' and scaler != 'cos':
 #             print("scaler must be normal or cos !")
             raise ValueError("scaler must be normal or cos !")
-        
+
         def PageScaler(x, y):
             x = np.array(x)
             y = np.array(y)
@@ -78,7 +80,7 @@ class MyHTMLParser(HTMLParser):
 #             print(f"max_x: {max_x}")
 #             print(f"max_y: {max_y}")
 #             print(f"tran: {tranTheta}")
-            
+
             x_scaler = preprocessing.MinMaxScaler((0, 1))
             if scaler == 'normal':
                 y_scaler = preprocessing.MinMaxScaler((0, 1))
@@ -113,7 +115,7 @@ def draw_scaled_page(page):
     plt.xlim([-0.05, 1.05])
     plt.ylim([-0.05, 1.05])
     plt.gca().invert_yaxis()
-    
+
 def compare_tag(tag_info, parsed_node):
     if tag_info[0] == parsed_node[0]:
         if len(tag_info[1]) == len(parsed_node[2]):
@@ -155,7 +157,7 @@ def position_check(file, parser, tagParser):
         i+=1
     return True
 
-def get_first_tag(parser, html):
+def get_first_tag(parser: MyHTMLParser, html: str):
     parser._reset()
     parser.feed(html)
     return parser.start_tags[0][0]
